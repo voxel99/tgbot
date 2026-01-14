@@ -1,0 +1,108 @@
+<?php
+    use jam\app\tg\Questions;
+    $Q = new Questions();
+    $lang = !empty($_GET['lang']) ? $_GET['lang'] : $user->lang;
+?>
+
+<h1>Данные пользователя</h1>
+
+<p>
+    Телефон: <?php echo $user->phone ?>
+</p>
+
+<p>
+    Телеграм ID: <?php echo $user->chat_id ?>
+</p>
+
+<p>
+    Реферер: <?php echo $user->referrer ?: 'нет' ?>
+</p>
+
+<p>
+    Язык пользователя: <?php echo strtoupper($user->lang) ?>,
+</p>
+
+<p>
+    NDA ID:
+    <?php if ($user->envelope_id): ?>
+        <a href="https://appdemo.docusign.com/documents/details/<?php echo $user->envelope_id ?>" ><?php echo $user->envelope_id ?></a>,
+    <?php else: ?>
+        Нет
+    <?php endif ?>
+</p>
+
+<p>
+    NDA отправлен? <b><?php echo $user->envelope_send ? 'Да' : 'Нет' ?></b>
+    <?php if ($canChangeNdaSend): ?>
+    <a class="mx-2" href="?chat_id=<?php echo $user->chat_id ?>&nda-send-toggle=1"><?php echo $user->envelope_send ? 'Нет' : 'Да' ?></a>
+    <?php endif ?>
+</p>
+<?php if ($ndaSendToggleMessage): ?>
+    <?php echo $ndaSendToggleMessage ?>
+<?php endif ?>
+
+<p>
+    NDA подписан? <b><?php echo $user->envelope_sign ? 'Да' : 'Нет' ?></b>
+    <?php if ($canChangeNdaSign): ?>
+    <a class="mx-2" href="?chat_id=<?php echo $user->chat_id ?>&nda-toggle=1"><?php echo $user->envelope_sign ? 'Нет' : 'Да' ?></a>
+    <?php endif ?>
+</p>
+
+<?php if ($ndaToggleMessage): ?>
+    <?php echo $ndaToggleMessage ?>
+<?php endif ?>
+
+<p>
+    Язык просмотра: <?php echo strtoupper($lang) ?>, переключить на
+    <?php if ($lang === 'ru'): ?>
+        <a class="mx-2" href="?lang=en&chat_id=<?php echo $user->chat_id ?>">EN</a>
+    <?php else: ?>
+        <a class="mx-2" href="?lang=ru&chat_id=<?php echo $user->chat_id ?>">RU</a>
+    <?php endif ?>
+</p>
+
+<p>
+    Язык пользователя: <?php echo strtoupper($user->lang) ?>,
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <td style="width: 30px">№</td>
+        <td style="width: 30%">Вопрос</td>
+        <td>Ответ</td>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    $answers = $user->getAnswers();
+    $questions = $Q->getList();
+    foreach ($questions as $i => $question):
+        $answerValue = !empty($answers[$question['id']]) ? $answers[$question['id']]->value : '';
+        if ($lang === 'en') {
+            $title = $question['name_en']."<br><small>".$question['description_en']."</small>";
+        } else {
+            $title = $question['name']."<br><small>".$question['description']."</small>";
+        }
+    ?>
+        <tr>
+            <td><?php echo $i + 1 ?></td>
+            <td><?php echo $title ?></b></td>
+            <td><b><?php echo $answerValue ?></b></td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
+</table>
+
+<?php echo $log ?>
+
+<p>
+    <a href="?">&larr; Перейти к общему списку</a>
+</p>
+
+<style>
+    .mx-2 {
+        margin-left: 6px;
+        margin-right: 6px;
+    }
+</style>

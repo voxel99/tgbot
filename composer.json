@@ -1,0 +1,15 @@
+{
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+      "platform-check": false
+  },
+  "require": {
+    "docusign/esign-client": "^6.16",
+    "pipedrive/pipedrive": "^4.0",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {"jam\\": "."}
+  }
+}

@@ -1,0 +1,32 @@
+<?php if ($all > 1): ?>
+<div class="pager">
+    <?php for ($number = 1; $number <= $all; $number++): ?>
+        <?php if ($number == $page): ?>
+        <b><?php echo $number ?></b>
+        <?php else: ?>
+        <a href="<?php echo str_replace('$', $number, $url) ?>"><?php echo $number ?></a>
+        <?php endif; ?>
+    <?php endfor; ?>
+</div>
+<?php endif; ?>
+
+<style>
+.pager {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.pager a,
+.pager b {
+    margin-right: 15px;
+    padding: 5px 10px;
+}
+
+.pager a:last-child,
+.pager a:last-child {
+    margin-right: 0;
+}
+
+</style>
+
+

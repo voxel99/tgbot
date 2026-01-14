@@ -1,0 +1,56 @@
+<?php
+    use jam\app\tg\Questions;
+?>
+
+<style>
+    .info {
+        background: #eee;
+        border-bottom: 1px solid #aaa;
+    }
+</style>
+
+<div class="info">
+    Пользователей: <?php echo $list->count ?>
+    <?php if ($list->all > $list->count): ?>
+    | <a href="?">Показать всех (<?php echo $list->all ?>)</a>
+    <?php endif ?>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>Telegam ID</td>
+        <td>Реферер</td>
+        <td>Имя</td>
+        <td>NDA отправлен?</td>
+        <td>NDA подписан?</td>
+        <td>Телефон</td>
+        <td>Страна</td>
+        <td>Вопросов отвечено</td>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    /** @var \jam\app\tg\state\User $user */
+    foreach ($list->list as $user):
+        $answers = $user->getAnswers();
+        $country = '';
+        if (!empty($answers[Questions::ID_COUNTRY]) && $answers[Questions::ID_COUNTRY]->value) {
+            $country = $answers[Questions::ID_COUNTRY]->value;
+        }
+    ?>
+        <tr>
+            <td><?php echo $user->id ?></td>
+            <td><a href="?chat_id=<?php echo $user->chat_id ?>"><?php echo $user->chat_id ?></a></td>
+            <td><a href="?filter[referrer]=<?php echo $user->referrer ?>"><?php echo $user->referrer ?></a></td>
+            <td><?php echo !empty($answers[Questions::ID_NAME]) ? $answers[Questions::ID_NAME]->value : '' ?></td>
+            <td><?php echo $user->envelope_send ? 'Да' : 'Нет' ?></td>
+            <td><?php echo $user->envelope_sign ? 'Да' : 'Нет' ?></td>
+            <td><?php echo $user->phone ?></td>
+            <td><?php echo $country ?></td>
+            <td><?php echo count($answers) ?> / <?php echo count($questions) ?></td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
+</table>

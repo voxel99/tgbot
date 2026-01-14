@@ -1,0 +1,11 @@
+<div class="user-nda-toggle-message">
+    Подтвердите изменение <strong>NDA отправлен: <?php echo $user->envelope_send ? 'Нет' : 'Да' ?></strong>
+    <a href="?chat_id=<?php echo $user->chat_id ?>&nda-send-confirm">Подтвердить</a>
+</div>
+
+<style>
+.user-nda-toggle-message {
+    background-color: rgba(255, 0, 0, 0.2);
+    padding: 4px 12px;
+}
+</style>

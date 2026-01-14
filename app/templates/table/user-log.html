@@ -1,0 +1,28 @@
+<?php
+if (empty($list)) 
+    return;
+?>
+
+<h2>История изменений в админке</h2>
+<table class="table table--log">
+<thead>
+  <tr>
+    <th>Изменение</th>
+    <th>Старое значение</th>
+    <th>Новое значение</th>
+    <th>Дата &darr;</th>
+    <th>IP</th>
+  </tr>
+</thead>
+<tbody>
+<?php foreach ($list as $item): ?>
+    <tr>
+        <td><?php echo $item['prop_name'] ?></td>
+        <td><?php echo $item['old_value'] ?></td>
+        <td><?php echo $item['new_value'] ?></td>
+        <td><?php echo $item['change_date'] ?></td>
+        <td><?php echo $item['ip'] ?></td>
+    </tr>
+<?php endforeach ?>
+</tbody>
+</table>
