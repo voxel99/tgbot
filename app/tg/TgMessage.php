@@ -3,14 +3,14 @@
 namespace jam\app\tg;
 
 class TgMessage {
-    protected $text;
-    protected $chatId;
+    protected string $text = '';
+    protected string $chatId = '';
 
-    function getChatId() {
+    public function getChatId(): string {
         return $this->chatId;
     }
 
-    function getText() {
+    public function getText(): string {
         return $this->text;
     }
 }

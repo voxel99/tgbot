@@ -4,50 +4,71 @@ namespace jam\app\tg\state;
 
 use jam\engine\utils\CamelCase;
 use jam\engine\utils\Code;
+use ReflectionClass;
+use ReflectionProperty;
 
 class Model {
-    protected $data = [];
+    public ?int $id = null;
 
-    function __construct(array $data = []) {
+    function __construct (array $data = []) {
         $this->init($data);
     }
 
-    function __get($prop) {
-        return $this->data[$prop] ?? null;
+    public function init (array $arr): void {
+        foreach ($arr as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
     }
 
-    function __set($prop, $value) {
-        $this->data[$prop] = $value;
+    public function merge (array $arr): void {
+        foreach ($arr as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
     }
 
-    function init(array $arr) {
-        $this->data = $arr;
+    public function exists (): bool {
+        return !empty($this->id);
     }
 
-    function merge(array $arr) {
-        $this->data = array_merge($this->data, $arr);
-    }
-
-    function exists() {
-        return !empty($this->data['id']);
-    }
-
-    function table() {
+    public function table (): string {
         return strtolower(CamelCase::from(Code::classBasename($this)));
     }
 
-    function save() {
+    protected function getProperties (): array {
+        $reflection = new ReflectionClass($this);
+        $properties = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);
+
+        $data = [];
+        foreach ($properties as $property) {
+            $name = $property->getName();
+            $value = $this->$name;
+            if ($value !== null) {
+                $data[$name] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    public function save (): int {
+        $data = $this->getProperties();
+
         if ($this->exists()) {
-            $upd = $this->data;
+            $upd = $data;
             unset($upd['id']);
             db()->query(sprintf('UPDATE ?_%s SET ?a WHERE id = ?d', $this->table()),
                 $upd,
                 $this->id
             );
         } else {
+            unset($data['id']);
             $this->id = db()->query(sprintf('INSERT INTO ?_%s (?#) VALUES (?a)', $this->table()),
-                array_keys($this->data),
-                array_values($this->data)
+                array_keys($data),
+                array_values($data)
             );
         }
         return $this->id;

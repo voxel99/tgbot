@@ -10,7 +10,7 @@ class CamelCase {
      * @param string $delimiter
      * @return string
      */
-    static function to ($input, $delimiter = "_"): string {
+    public static function to (string $input, string $delimiter = "_"): string {
         $arr = explode($delimiter, $input);
         $ret = '';
         foreach ($arr as $value) {
@@ -26,7 +26,7 @@ class CamelCase {
      * @param string $delimiter
      * @return string
      */
-    static function from ($input, $delimiter = "_"): string {
+    public static function from (string $input, string $delimiter = "_"): string {
         preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
         $ret = $matches[0];
         foreach ($ret as &$match) {

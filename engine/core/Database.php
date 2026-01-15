@@ -15,7 +15,7 @@ class Database {
     private $name = '';
     private $_info = '';
 
-    public function __construct ($dsn, $name) {
+    public function __construct (string $dsn, string $name) {
         $this->name = $name;
         if (!$dsn)
             throw new \Exception("DSN не задан для подключения " . $name);
@@ -42,23 +42,23 @@ class Database {
      *      5 - включён вывод в stdout всех sql запросов без их выполнения
      * @return int old debug mode
      */
-    public function debug ($debug = 1) {
+    public function debug (int $debug = 1): int {
         return $this->db->debugSql($debug);
     }
 
-    public function isDebug ($debug = 1) {
+    public function isDebug (int $debug = 1): bool {
         return $this->db->isDebugSql($debug);
     }
 
-    public function getName () {
+    public function getName (): string {
         return $this->name;
     }
 
-    public function info ($pdo, $query, $trace) {
+    public function info (mixed $pdo, mixed $query, mixed $trace): void {
         $this->_info .= $query;
     }
 
-    public function __call ($name, $args) {
+    public function __call (string $name, array $args): mixed {
         $this->_info = "";
         if ($name == "errorHandler")
             $stat = call_user_func_array(array($this, $name), $args);
@@ -67,7 +67,7 @@ class Database {
         return $stat;
     }
 
-    protected function errorHandler ($msg, $info) {
+    protected function errorHandler (string $msg, array $info): void {
         $msg = iconv('cp1251', 'utf-8//IGNORE', $msg);
         if (isset($info['message'])) {
             $info['message'] = iconv('cp1251', 'utf-8//IGNORE', $info['message']);

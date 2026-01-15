@@ -1,6 +1,6 @@
 <?php
 
-function lang($lang, $ru, $en) {
+function lang(?string $lang, string $ru, string $en): string {
     $q = [
         'ru' => $ru,
         'en' => $en

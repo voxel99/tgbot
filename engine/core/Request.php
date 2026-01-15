@@ -122,7 +122,7 @@ class Request {
      * @param string $type
      * @return string URI запроса
      */
-    private function determineUri ($type) {
+    private function determineUri (string $type): string {
         $uri = '';
         switch ($type) {
             case self::TYPE_ACTION:
@@ -210,50 +210,50 @@ class Request {
     /**
      * Установить флаг
      *
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed $value
      * @return $this
      */
-    public function setFlag($name, $value) {
+    public function setFlag(string $name, mixed $value): static {
         $this->flags[$name] = $value;
         return $this;
     }
 
-    public function setVerboseFlag($value, $vv = false) {
+    public function setVerboseFlag(mixed $value, bool $vv = false): void {
         $this->setFlag($vv ? 'vv' : 'v', $value);
     }
 
-    public function isVerboseFlag ($vv = false) {
+    public function isVerboseFlag (bool $vv = false): bool {
         $vFlag = !$vv && !empty($this->flags['v']);
         $vvFlag = !empty($this->flags['vv']);
         return $vFlag || $vvFlag;
     }
 
-    public function isHelpFlag () {
+    public function isHelpFlag (): bool {
         return !empty($this->flags['h']);
     }
 
-    public function isForceFlag () {
+    public function isForceFlag (): bool {
         return !empty($this->flags['f']) || !empty($this->flags['force']);
     }
 
-    public function isProfileFlag () {
+    public function isProfileFlag (): bool {
         return !empty($this->flags['profile']);
     }
 
-    public function isLogFlag () {
+    public function isLogFlag (): bool {
         return !empty($this->flags['ll']);
     }
 
-    public function flag ($f, $default = false) {
+    public function flag (string $f, mixed $default = false): mixed {
         return $this->flags[$f] ?? $default;
     }
 
-    public function isAjaxRequestedWith () {
+    public function isAjaxRequestedWith (): bool {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 
-    function setAjax ($flag) {
+    public function setAjax (string|bool $flag): void {
         if ($flag === "auto") {
             $this->_ajax = $this->isAjaxRequestedWith();
         } else {
@@ -263,29 +263,29 @@ class Request {
 
     /**
      * Uri запроса
-     * @return null|string
+     * @return string
      */
-    public function uri () {
+    public function uri (): string {
         return $this->_uri;
     }
 
     /**
      * Тип запроса
-     * @return null|string
+     * @return string
      */
-    public function type () {
+    public function type (): string {
         return $this->_type;
     }
 
     /**
-     * Тип запроса
-     * @return null|string
+     * Метод запроса
+     * @return string
      */
-    public function method () {
+    public function method (): string {
         return $this->_method;
     }
 
-    public function get ($name, $default = null) {
+    public function get (string $name, mixed $default = null): mixed {
         if ($this->method() === self::METHOD_GET) {
             return isset($_GET[$name]) ? $_GET[$name] : $default;
         }

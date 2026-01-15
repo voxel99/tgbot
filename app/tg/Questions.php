@@ -3,7 +3,7 @@
 namespace jam\app\tg;
 
 class Questions {
-    protected $list;
+    protected array $list;
 
     const FIRST_QUESTION_ID = 10;
     const ID_NAME = 10;
@@ -15,19 +15,19 @@ class Questions {
     const ID_NDA = 100;
     const FINISH = 9999;
 
-    function __construct() {
+    public function __construct() {
         $this->list = config('questions');
     }
 
-    function getList() {
+    public function getList(): array {
         return $this->list;
     }
 
-    function getCountQuestions () {
+    public function getCountQuestions (): int {
         return count($this->list);
     }
 
-    function getQuestionNum($questionId) {
+    public function getQuestionNum(int $questionId): int {
         foreach ($this->list as $k => $item) {
             $item = (object) $item;
             if ((int) $item->id === (int) $questionId) {
@@ -37,7 +37,7 @@ class Questions {
         return 0;
     }
 
-    function getQuestion($questionId, $next = false, $prev = false) {
+    public function getQuestion(int $questionId, bool $next = false, bool $prev = false): ?object {
         $find = false;
         $question = null;
         $prevQuestion = null;
@@ -64,15 +64,15 @@ class Questions {
         return $question;
     }
 
-    function getNextQuestion($questionId) {
+    public function getNextQuestion(int $questionId): ?object {
         return $this->getQuestion($questionId, true);
     }
 
-    function getPrevQuestion($questionId) {
+    public function getPrevQuestion(int $questionId): ?object {
         return $this->getQuestion($questionId, false, true);
     }
 
-    function getFirstQuestion() {
+    public function getFirstQuestion(): ?array {
         return $this->list[0] ?? null;
     }
 }

@@ -5,7 +5,7 @@ namespace jam\app\tg;
 use jam\app\tg\state\StateException;
 
 class TgCommand {
-    static function getDefaultResponseType (TgBotState $state, $isContinue = false) {
+    public static function getDefaultResponseType (TgBotState $state, bool $isContinue = false): string {
         $type = TgResponse::ANSWER;
         if (!$state->getLang()) {
             $type = TgResponse::START;
@@ -17,7 +17,7 @@ class TgCommand {
         return $type;
     }
 
-    static function processCommand(TgReceiveMessage $message, TgBotState $state) {
+    public static function processCommand(TgReceiveMessage $message, TgBotState $state): ?string {
         $args = explode(' ', $message->getText());
         $command = $args[0];
         $arg = $args[1] ?? '';
@@ -65,7 +65,7 @@ class TgCommand {
         return $type;
     }
 
-    static function processAnswer(TgReceiveMessage $message, TgBotState $state) {
+    public static function processAnswer(TgReceiveMessage $message, TgBotState $state): string {
         $nextResponseType = TgResponse::ANSWER;
         $text = $message->getText();
         if ($message->getPhone()) {
@@ -89,7 +89,7 @@ class TgCommand {
         return $nextResponseType;
     }
 
-    static function process (TgReceiveMessage $message, TgBotState $state) {
+    public static function process (TgReceiveMessage $message, TgBotState $state): TgResponse {
         if (self::isCommand($message)) {
             $responseType = self::processCommand($message, $state);
             if (!$responseType) {
@@ -101,7 +101,7 @@ class TgCommand {
         return TgResponse::create($responseType, $state);
     }
 
-    static function isCommand(TgReceiveMessage $message, $commandName = '') {
+    public static function isCommand(TgReceiveMessage $message, string $commandName = ''): bool {
         $text = $message->getText();
         $isLeadingSlash = $text && !empty($text[0]) && ($text[0] === '/');
         $isTargetCommand = trim(substr($text, 1)) === $commandName;

@@ -1,7 +1,7 @@
 <?php
 namespace jam\engine\utils;
 class Strings {
-    static function pairValue ($line, $notPairValue = '', $delim = '=') {
+    public static function pairValue (string $line, string $notPairValue = '', string $delim = '='): array {
         $ret = [];
         if (!str_contains($line, $delim)) {
             $ret[trim($line)] = $notPairValue;

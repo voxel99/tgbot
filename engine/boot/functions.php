@@ -31,7 +31,7 @@ function config (string $section, mixed $default = []): mixed {
 /**
  * Экземпляр БД
  */
-function db ($name = "master"): Database|DBSimpleDatabase {
+function db (string $name = "master"): Database|DBSimpleDatabase {
     global $jam;
     return $jam->db($name);
 }
@@ -101,7 +101,7 @@ function formatTraceLine (array $b): string {
     return sprintf("%-120s%-60s\n", $invoke, $pos);
 }
 
-function backtrace ($slice = 1, $length = 0): array {
+function backtrace (int $slice = 1, int $length = 0): array {
     $bt = debug_backtrace();
     $trace = [];
     foreach ($bt as $k => $b) {
@@ -124,7 +124,7 @@ function backtrace ($slice = 1, $length = 0): array {
  * @return string
  * @throws Exception
  */
-function tpl ($tmpl, array $params = []): string {
+function tpl (string $tmpl, array $params = []): string {
     global $jam;
     $tmplPath = $jam->getRootDir() . '/app/templates/' . $tmpl;
     if (!$tmplPath) {

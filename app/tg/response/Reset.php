@@ -6,7 +6,7 @@ use jam\app\tg\TgBotState;
 use jam\app\tg\TgResponse;
 
 class Reset extends TgResponse {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         if ($state->isFinish()) {
             $this->text = $state->langVariants("Ваш профиль:", "Your profile:")."\n\n".$state->getProfileInfo()."\n\n";
             $this->text .= $state->langVariants('Хотите начать заново?', 'Do you want to start over?');
@@ -16,7 +16,7 @@ class Reset extends TgResponse {
         parent::__construct($state);
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $first = $this->state->isFinish() ?
             ['text' => $this->state->langVariants('Отмена', 'Continue'), 'callback_data' => '/cancel']:
             ['text' => $this->state->langVariants('Продолжить', 'Continue'), 'callback_data' => '/continue'];

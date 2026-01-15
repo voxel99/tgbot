@@ -7,8 +7,9 @@ use jam\app\tg\TgResponse;
 use jam\app\tg\TgBotState;
 
 class Answer extends TgResponse {
-    protected $question;
-    function __construct(TgBotState $state) {
+    protected object $question;
+
+    public function __construct(TgBotState $state) {
         $profile = $state->getProfileInfo();
         $Q = new Questions();
         $questionId = $state->getUser()->question_id ?: 0;
@@ -40,7 +41,7 @@ class Answer extends TgResponse {
         parent::__construct($state);
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [];
 
         if ($this->state->getPrevQuestion()) {

@@ -9,7 +9,7 @@ use jam\app\tg\TgBotState;
 class Nda extends TgResponse {
     protected TgBotState $state;
 
-    protected function getEmail(TgBotState $state) {
+    protected function getEmail(TgBotState $state): string {
         $email = $state->getEmail();
         if (!$email) {
             throw new StateException($state->langVariants('Вы не указали email', 'You didn\'t provide an email'));
@@ -19,7 +19,7 @@ class Nda extends TgResponse {
         return $email;
     }
 
-    protected function getName(TgBotState $state) {
+    protected function getName(TgBotState $state): string {
         $name = $state->getName();
         if (!$name) {
             throw new StateException($state->langVariants('Вы не указали своё имя и фамилию', 'You didn\'t provide an name and surename'));
@@ -27,7 +27,7 @@ class Nda extends TgResponse {
         return $name;
     }
 
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         $this->state = $state;
         $name = $this->getName($state);
         $email = $this->getEmail($state);
@@ -45,7 +45,7 @@ TEXT;
         parent::__construct($state);
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [
             ['text' => $this->state->langVariants('Получить', 'Receive'), 'callback_data' => '/nda_send '.$this->state->getEmail()],
         ];

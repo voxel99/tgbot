@@ -3,18 +3,18 @@
 namespace jam\app\tg;
 
 class TgReceiveMessage extends TgMessage {
-    public $userName;
-    public $firstName;
-    public $lastName;
-    public $phone;
-    public $callbackQueryId = null;
+    public string $userName = '';
+    public string $firstName = '';
+    public string $lastName = '';
+    public string $phone = '';
+    public ?string $callbackQueryId = null;
     // private $callbackData;
 
-    function __construct(array $input) {
+    public function __construct(array $input) {
         $this->parse($input);
     }
 
-    function parse(array $data) {
+    public function parse(array $data): void {
         $t = 'message';
         if (!empty($data['callback_query'])) {
             $t = 'callback_query';
@@ -30,19 +30,19 @@ class TgReceiveMessage extends TgMessage {
         $this->phone = $data['message']['contact']['phone_number'] ?? '';
     }
 
-    function getChatId() {
+    public function getChatId(): string {
         return $this->chatId;
     }
 
-    function getText() {
+    public function getText(): string {
         return $this->text;
     }
 
-    function getPhone() {
+    public function getPhone(): string {
         return $this->phone;
     }
 
-    function getCallbackQueryid() {
+    public function getCallbackQueryid(): ?string {
         return $this->callbackQueryId;
     }
 

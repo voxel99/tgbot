@@ -6,7 +6,7 @@ use jam\app\tg\TgBotState;
 use jam\app\tg\TgResponse;
 
 class Phone extends TgResponse {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         $this->text = $state->langVariants(
             'Пожалуйста, нажмите кнопку ниже ⬇ ОТПРАВИТЬ НОМЕР',
             'Press the ⬇ SEND NUMBER button'
@@ -14,7 +14,7 @@ class Phone extends TgResponse {
         parent::__construct($state);
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [
             ['text' => $this->state->langVariants('📲 ОТПРАВИТЬ НОМЕР', '📲 SEND NUMBER'), 'request_contact' => true]
         ];

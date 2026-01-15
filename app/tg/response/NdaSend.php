@@ -6,7 +6,7 @@ use jam\app\tg\state\StateException;
 use jam\app\tg\TgBotState;
 
 class NdaSend extends Nda {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         parent::__construct($state);
 
         $name = $this->getName($state);
@@ -28,7 +28,7 @@ TEXT;
         }
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [];
         return json_encode([
             "inline_keyboard" => [$markup],

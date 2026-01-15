@@ -6,12 +6,12 @@ use jam\app\tg\TgBotState;
 use jam\app\tg\TgResponse;
 
 class MyError extends TgResponse {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         $this->text = $state->getError();
         parent::__construct($state);
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [
             ['text' => $this->state->langVariants('Продолжить', 'Continue'), 'callback_data' => '/continue'],
             ['text' => 'Начать заново RU', 'callback_data' => '/begin ru'],

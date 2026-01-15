@@ -5,20 +5,19 @@ namespace jam\app\tg\state;
 use jam\app\tg\Questions;
 
 class User extends Model {
-    /*
-    public $id = null;
-    public $chat_id = null;
-    public $lang = null;
-    public $question_id = null;
-    public $phone = null;
-    public $referrer = null;
-    public $envelope_id = null; 
-    public $envelope_sign = 0;
-    public $envelope_send = 0;
-    */
+    public ?int $chat_id = null;
+    public ?string $lang = null;
+    public ?int $question_id = null;
+    public ?string $phone = null;
+    public ?string $referrer = null;
+    public ?string $envelope_id = null;
+    public int $envelope_sign = 0;
+    public int $envelope_send = 0;
+    public ?int $pipedrive_id = null;
 
     protected array $answers = [];
-    function get($chatId) {
+
+    public function get(int $chatId): static {
         $this->init(db()->selectRow('SELECT * FROM ?_user WHERE chat_id = ?d', $chatId));
         if ($this->exists()) {
             $answers = db()->select('SELECT * FROM ?_answer WHERE user_id = ?d', $this->id);
@@ -32,12 +31,12 @@ class User extends Model {
         return $this;
     }
 
-    function getByEnvelopeId($envelopeId) {
+    public function getByEnvelopeId(string $envelopeId): static {
         $this->init(db()->selectRow('SELECT * FROM ?_user WHERE envelope_id = ?d', $envelopeId));
         return $this;
     }
 
-    function getList($limit, $offset = 0, $filter = []) {
+    public function getList(int $limit, int $offset = 0, array $filter = []): object {
         $s = \DBSIMPLE_SKIP;
         if (!empty($filter)) {
             $s = db()->subquery('WHERE (?&)', $filter);
@@ -65,23 +64,24 @@ class User extends Model {
 
     }
 
-    function addAnswer(Answer $a) {
+    public function addAnswer(Answer $a): void {
         $this->answers[$a->question_id] = $a;
     }
 
-    function getAnswers() {
+    public function getAnswers(): array {
         return $this->answers;
     }
 
-    function save() {
+    public function save(): int {
         parent::save();
         foreach ($this->answers as &$answer) {
             $answer->user_id = $this->id;
             $answer->save();
         }
+        return $this->id;
     }
 
-    function setLang($text) {
+    public function setLang(string $text): void {
         $text = trim($text);
         if (!in_array($text, ['en', 'ru'])) {
             throw new StateException("Language not set", StateException::WRONG_LANGUAGE);
@@ -89,18 +89,18 @@ class User extends Model {
         $this->lang = $text;
     }
 
-    function setReferrer($referrer) {
+    public function setReferrer(string $referrer): void {
         $this->referrer = trim(strip_tags($referrer));
     }
 
-    function setEnvelopeId($envelopeId) {
+    public function setEnvelopeId(string $envelopeId): void {
         $this->envelope_id = trim(strip_tags($envelopeId));
         if ($envelopeId) {
             $this->envelope_send = true;
         }
     }
 
-    function setPhone($text) {
+    public function setPhone(string $text): void {
         $text = trim($text);
         if (!preg_match('#\d+#', $text)) {
             throw new StateException(
@@ -110,15 +110,15 @@ class User extends Model {
         $this->phone = $text;
     }
 
-    function getPhone() {
+    public function getPhone(): string {
         return $this->phone ?? '';
     }
 
-    function setAnswers(array $answers) {
+    public function setAnswers(array $answers): void {
         $this->answers = $answers;
     }
 
-    function setAnswer($questionId, $text) {
+    public function setAnswer(int $questionId, string $text): void {
         $exists = $this->answers[$questionId] ?? null;
         $A = new Answer([
             'id' => $exists->id ?? null,

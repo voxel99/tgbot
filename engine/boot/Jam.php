@@ -23,18 +23,18 @@ class Jam {
      */
     private $_response = null;
 
-    function __construct($rootDir) {
+    public function __construct(string $rootDir) {
         $this->rootDir = $rootDir;
     }
 
     /**
      * @return string
      */
-    function getRootDir() {
+    public function getRootDir(): string {
         return $this->rootDir;
     }
 
-    public function request (?Request $r = null) {
+    public function request (?Request $r = null): Request {
         if ($r)
             $this->_request = $r;
         if (!$this->_request)
@@ -46,7 +46,7 @@ class Jam {
      * @param Response|null $r
      * @return Response
      */
-    public function response (?Response $r = null) {
+    public function response (?Response $r = null): Response {
         if ($r)
             $this->_response = $r;
         if (!$this->_response)
@@ -54,7 +54,7 @@ class Jam {
         return $this->_response;
     }
 
-    function config($key, $default = []) {
+    public function config(string $key, mixed $default = []): mixed {
         if (is_null(self::$config)) {
             self::$config = include($this->rootDir . "/config.php");
         }
@@ -78,14 +78,14 @@ class Jam {
         return $config;
     }
 
-    function db($name = "master") {
+    public function db(string $name = "master"): Database {
         if (empty(self::$db[$name])) {
-            self::$db[$name] = new Database(self::config('db.'.$name), $name);
+            self::$db[$name] = new Database($this->config('db.'.$name), $name);
         }
         return self::$db[$name];
     }
 
-    public function env ($name, $default = '') {
+    public function env (string $name, string $default = ''): string {
         if (empty($this->dotenv)) {
             $envFile = $this->rootDir . '/.env';
             if (is_file($envFile)) {

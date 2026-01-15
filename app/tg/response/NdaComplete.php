@@ -7,7 +7,7 @@ use jam\app\tg\TgResponse;
 use jam\app\tg\TgBotState;
 
 class NdaComplete extends Nda {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         parent::__construct($state);
         if ($state->getLang() === 'ru') {
             $this->text = <<<TEXT
@@ -20,7 +20,7 @@ TEXT;
         }
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [];
         return json_encode([
             "inline_keyboard" => [$markup],

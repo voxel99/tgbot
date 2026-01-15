@@ -12,9 +12,9 @@ class RequestEnv
     public function __construct() {}
 
     /**
-     * ПолучитьIP адрес запроса
+     * Получить IP адрес запроса
      */
-    public function getIp () {
+    public function getIp (): string|false {
         $ip = false;
         // Заголовки в порядке приоритета получения IP адреса клиента
         $headers = ["X-REAL-IP", "HTTP_X_REAL_IP", "REMOTE_ADDR"];
@@ -34,7 +34,7 @@ class RequestEnv
         return $ip;
     }
 
-    function getHost()
+    public function getHost(): string
     {
         $host = "";
         if (isset($_SERVER['HTTP_HOST']))
@@ -42,7 +42,7 @@ class RequestEnv
         return $host;
     }
 
-    function isSecure()
+    public function isSecure(): bool
     {
         return (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on')
             || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https");
@@ -51,7 +51,7 @@ class RequestEnv
     /**
      * @return string
      */
-    function getUserAgent() {
+    public function getUserAgent(): string {
         return $_SERVER['HTTP_USER_AGENT'] ?? '';
     }
 }

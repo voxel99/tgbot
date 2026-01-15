@@ -27,11 +27,11 @@ class TgResponse extends TgMessage {
 
     protected TgBotState $state;
 
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         $this->state = $state;
     }
 
-    static function create($type, TgBotState $state) {
+    public static function create(string $type, TgBotState $state): TgResponse {
         $types = [
             self::START => Start::class,
             self::PHONE => Phone::class,
@@ -58,11 +58,11 @@ class TgResponse extends TgMessage {
         return $responseObject;
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         return '';
     }
 
-    function isAnswerCallbackQuery() {
+    public function isAnswerCallbackQuery(): bool {
         return false;
     }
 }

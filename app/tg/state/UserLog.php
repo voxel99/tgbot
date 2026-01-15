@@ -3,17 +3,14 @@
 namespace jam\app\tg\state;
 
 class UserLog extends Model {
-    /*
-    public $id = null;
-    public $user_id = null;
-    public $change_date = null;
-    public $prop_name = null;
-    public $old_value = null;
-    public $new_value = null;
-    public $ip = null;
-    */
+    public ?int $user_id = null;
+    public ?string $change_date = null;
+    public ?string $prop_name = null;
+    public ?string $old_value = null;
+    public ?string $new_value = null;
+    public ?string $ip = null;
 
-    function add ($userId, $propName, $oldValue, $newValue, $ip) {
+    public function add (int $userId, string $propName, ?string $oldValue, ?string $newValue, string $ip): void {
         $this->id = null;
         $this->user_id = $userId;
         $this->change_date = date('Y-m-d H:i:s');
@@ -25,11 +22,8 @@ class UserLog extends Model {
         $this->save();
     }
 
-    function getList ($userId, $propName = null) {
+    public function getList (int $userId, ?string $propName = null): array {
         return db()->select('SELECT * FROM ?_user_log WHERE user_id = ?d {AND prop_name = ?} ORDER BY id DESC LIMIT 100', $userId, $propName ?: DBSIMPLE_SKIP);
     }
-
-
-
 }
 

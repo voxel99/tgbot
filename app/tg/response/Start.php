@@ -6,12 +6,12 @@ use jam\app\tg\TgResponse;
 use jam\app\tg\TgBotState;
 
 class Start extends TgResponse {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         $this->text = tpl("response/start.html");
         parent::__construct($state);
     }
 
-    function getReplyMarkup() {
+    public function getReplyMarkup(): array|string {
         $markup = [
             ['text' => 'Начать RU', 'callback_data' => '/begin ru'],
             ['text' => 'Start EN', 'callback_data' => '/begin en']

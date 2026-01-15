@@ -7,52 +7,52 @@ use jam\app\tg\state\Answer;
 use jam\app\tg\state\User;
 
 class TgBotState {
-    protected $chatId;
+    protected int $chatId;
     protected ?User $user = null;
-    protected $error = '';
+    protected string $error = '';
 
-    function __construct ($chatId) {
+    public function __construct (int $chatId) {
         $this->chatId = $chatId;
     }
 
-    function getAnswerValue($questionId) {
+    public function getAnswerValue(int $questionId): string {
         $answer = $this->getCurrentAnswer($questionId);
         return $answer ? $answer->value : '';
     }
 
-    function getEmail() {
+    public function getEmail(): string {
         return $this->getAnswerValue(Questions::ID_EMAIL);
     }
 
-    function getName() {
+    public function getName(): string {
         return $this->getAnswerValue(Questions::ID_NAME);
     }
 
-    function setError($error) {
+    public function setError(string $error): void {
         $this->error = $error;
     }
 
-    function getError() {
+    public function getError(): string {
         return $this->error;
     }
 
-    function getUser (): User {
+    public function getUser (): User {
         if (!$this->user) {
             $this->user = (new User())->get($this->chatId);
         }
         return $this->user;
     }
 
-    function langVariants($ru, $en) {
+    public function langVariants(string $ru, string $en): string {
         return lang($this->getLang(), $ru, $en);
     }
 
-    function getAnswer($questionId) {
+    public function getAnswer(int $questionId): ?Answer {
         $answers = $this->getUser()->getAnswers();
         return $answers[$questionId] ?? null;
     }
 
-    function getProfileInfo () {
+    public function getProfileInfo (): string {
         $answers = $this->getUser()->getAnswers();
         $questions = (new Questions())->getList();
         $info = [];
@@ -80,49 +80,50 @@ class TgBotState {
         return implode("\n", $info);
     }
 
-    function getLang () {
+    public function getLang (): ?string {
         return $this->getUser()->lang;
     }
 
-    function setReferrer($referrer) {
+    public function setReferrer(string $referrer): void {
         $this->getUser()->setReferrer($referrer);
         $this->getUser()->save();
     }
 
-    function setEnvelopeId($envelopeId) {
+    public function setEnvelopeId(string $envelopeId): void {
         $this->getUser()->setEnvelopeId($envelopeId);
         $this->getUser()->save();
     }
 
-    function setLang($lang) {
+    public function setLang(string $lang): void {
         $this->getUser()->setLang($lang);
         $this->getUser()->save();
     }
 
-    function setPhone($phone) {
+    public function setPhone(string $phone): void {
         $this->getUser()->setPhone($phone);
         $this->getUser()->save();
     }
 
-    function resetQuestions() {
+    public function resetQuestions(): void {
         $this->getUser()->question_id = Questions::FIRST_QUESTION_ID;
         $this->getUser()->save();
     }
 
-    function setPrevQuestions() {
+    public function setPrevQuestions(): void {
         $Q = new Questions();
         $prevQuestion = $Q->getPrevQuestion($this->getUser()->question_id);
         $this->getUser()->question_id = $prevQuestion ? $prevQuestion->id : 0;
         $this->getUser()->save();
     }
-    function setNextQuestions() {
+
+    public function setNextQuestions(): void {
         $Q = new Questions();
         $nextQuestion = $Q->getNextQuestion($this->getUser()->question_id);
         $this->getUser()->question_id = $nextQuestion ? $nextQuestion->id : Questions::FINISH;
         $this->getUser()->save();
     }
 
-    function getCurrentAnswer ($questionId = null) {
+    public function getCurrentAnswer (?int $questionId = null): ?Answer {
         if (!$questionId) {
             $question = $this->getCurrentQuestion();
             if ($question) {
@@ -133,42 +134,42 @@ class TgBotState {
         return $answers[$questionId] ?? null;
     }
 
-    function haveCurrentAnswer ($questionId = null) {
+    public function haveCurrentAnswer (?int $questionId = null): bool {
         return !!$this->getCurrentAnswer($questionId);
     }
 
-    function getPrevQuestion () {
+    public function getPrevQuestion (): ?object {
         $Q = new Questions();
         return $Q->getPrevQuestion($this->getUser()->question_id);
     }
 
-    function setCurrentQuestion ($value) {
+    public function setCurrentQuestion (string $value): void {
         $this->getUser()->setAnswer($this->getUser()->question_id, $value);
     }
 
-    function getCurrentQuestion () {
+    public function getCurrentQuestion (): ?object {
         $Q = new Questions();
         return $Q->getQuestion($this->getUser()->question_id ?: Questions::FIRST_QUESTION_ID);
     }
 
-    function getNextQuestion () {
+    public function getNextQuestion (): ?object {
         $Q = new Questions();
         return $Q->getNextQuestion($this->getUser()->question_id);
     }
 
-    function isExists () {
+    public function isExists (): bool {
         return $this->getUser()->exists();
     }
 
-    function isFinish() {
+    public function isFinish(): bool {
         return (int) ($this->getUser()->question_id) === Questions::FINISH;
     }
 
-    function hasPhone () {
+    public function hasPhone (): ?string {
         return $this->getUser()->phone;
     }
 
-    function updateCurrentState($text) {
+    public function updateCurrentState(string $text): void {
         $user = $this->getUser();
         if (!$user->lang) {
             $user->setLang($text);

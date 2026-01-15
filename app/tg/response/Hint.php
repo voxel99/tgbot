@@ -7,7 +7,7 @@ use jam\app\tg\TgResponse;
 use jam\app\tg\TgBotState;
 
 class Hint extends TgResponse {
-    function __construct(TgBotState $state) {
+    public function __construct(TgBotState $state) {
         $question = $state->getCurrentQuestion();
         if ($question && !empty($question->hint)) {
             $this->text = $state->langVariants($question->hint, $question->hint_en);
@@ -16,7 +16,8 @@ class Hint extends TgResponse {
         }
         parent::__construct($state);
     }
-    function isAnswerCallbackQuery() {
+
+    public function isAnswerCallbackQuery(): bool {
         return true;
     }
 }

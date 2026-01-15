@@ -5,23 +5,24 @@ namespace jam\app\tg;
 use jam\app\tg\state\StateException;
 
 class TgBot {
-    protected $config = [];
-    function __construct($config) {
+    protected array $config = [];
+
+    public function __construct(array $config) {
         $this->config = $config;
     }
 
-    function getWebhookUrl() {
+    public function getWebhookUrl(): string {
         return sprintf('https://api.telegram.org/bot%s/setWebhook?url=%s',
             $this->config['token'],
             $this->config['webhookUrl']
         );
     }
 
-    private function isTest() {
+    private function isTest(): bool {
         return isset($_GET['test']) || request()->isCli();
     }
 
-    function getInputData() {
+    public function getInputData(): array {
         $ret = [];
         $data = file_get_contents('php://input'); // весь ввод перенаправляем в $data
         if ($data) {
@@ -36,7 +37,7 @@ class TgBot {
         return $ret;
     }
 
-    function sendAnswerCallback($callbackQueryId, TgResponse $message) {
+    public function sendAnswerCallback(string $callbackQueryId, TgResponse $message): void {
         $ch = curl_init();
         $opt = [
             CURLOPT_URL => sprintf('https://api.telegram.org/bot%s/answerCallbackQuery', $this->config['token']),
@@ -57,7 +58,7 @@ class TgBot {
         curl_close($ch);
     }
 
-    function sendResponse(string $chatId, TgResponse $message) {
+    public function sendResponse(string $chatId, TgResponse $message): void {
         $ch = curl_init();
         $markup = $message->getReplyMarkup();
         if ($markup && is_array($markup)) {
@@ -83,7 +84,7 @@ class TgBot {
         curl_close($ch);
     }
 
-    function run() {
+    public function run(): void {
         $input = $this->getInputData();
         if ($this->isTest() && !empty($this->config['log_last']) && is_file($this->config['log_last'])) {
             $input = include($this->config['log_last']);

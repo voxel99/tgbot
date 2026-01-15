@@ -2,3 +2,6 @@
 /*.log
 /vendor
 /.env
+/.phpunit.cache
+/phpunit.xml.dist
+.phpunit.result.cache

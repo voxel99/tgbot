@@ -1,71 +1,107 @@
-# Тестовый телеграм бот для анкетирования
+# Телеграм-бот для анкетирования с интеграцией DocuSign и Pipedrive
 
-* Собирает информацию от пользователей с навигацией по вопросам
-* Интегрируется с Docusign (https://www.docusign.com/products/electronic-signature) для электронной подписи документов (NDA)
-* Синхронизируется с Pipedrive CRM (https://www.pipedrive.com/)
-* Имеет примитивный интерфейс администратора для просмотра и редактирования пользователей. Все правки сохраняются в логе БД.
+Бот для проведения опросов пользователей с возможностью электронной подписи NDA через DocuSign и синхронизацией данных в Pipedrive CRM.
 
-# Минимальные версии
+## Возможности
+
+* Сбор информации от пользователей с навигацией по вопросам
+* Поддержка двух языков (русский/английский)
+* Интеграция с [DocuSign](https://www.docusign.com/products/electronic-signature) для электронной подписи документов (NDA)
+* Синхронизация с [Pipedrive CRM](https://www.pipedrive.com/)
+* Админ-панель для просмотра и редактирования пользователей с логированием всех изменений
+
+## Системные требования
+
 * PHP >= 8
 * MySQL >= 5
+* Composer
 
-# Step-by-step guide
+## Быстрый старт
 
-## Создание окружения
+### 1. Настройка окружения
 
-* Создайте файл .env в корне проекта, скопируйте в него содержимое .env.example
-* Создайте БД MySQL с произвольным именем, которая будет использоваться нашим ботом
-* Залейте дамп БД из файла db.sql в корне проекта
-* Задайте параметры подключения к локальной БД MySQL в .env
-
-## Установите зависимости
-composer install
-
-Composer установит только клиентов для АПИ Docusign и Pipedrive, других зависимостей в проекте нет.
-
-Все команды выполняйте внутри дирректории public проекта
+Все команды выполняются из директории `public`:
+```bash
 cd ./public
+```
 
-## Запустите dev-сервер
+**Начальная настройка:**
+
+1. Скопируйте `.env.example` в `.env` и настройте параметры базы данных и API
+2. Создайте MySQL базу данных
+3. Импортируйте схему: `mysql -u username -p database_name < ../db.sql`
+4. Установите зависимости: `composer install` (из корня проекта)
+5. Запустите dev-сервер: `php -S localhost:8888`
+6. Настройте ngrok туннель: `ngrok http 8888`
+7. Обновите `SITE_URL` в `.env` адресом из ngrok
+
+### 2. Основные команды
+
+**Запуск dev-сервера:**
+```bash
+cd public
 php -S localhost:8888
+```
 
-## Запустите ngrok (https://ngrok.com/)
-ngrok http 8888
+**Проверка настройки webhook Telegram:**
+```bash
+php webhook.php
+```
+Команда выведет URL для настройки webhook в Telegram.
 
-Ngrok создаст туннель к локально запущенному серверу. Задайте в .env SITE_NAME=https://xxxxxxxxxxxx.ngrok-free.app адрес внешнего интерфейса.
-
-## Интеграции
-
-Используйте полученный адрес для интеграции с Docusign и Pipedrive
-
-### Настройка интеграции с Docusign
-
-https://xxxxxxxxxxxx.ngrok-free.app/docusign_webhook.php - используйте этот адрес в Docusign при настройке webhook (https://developers.docusign.com/platform/webhooks/)
-Задайте параметры DOCUSIGN_INTEGRATION_KEY, DOCUSIGN_SECRET_KEY, DOCUSIGN_ACCOUNT_ID, DOCUSIGN_NDA_TEMPLATE_ID в .env.
-Откройте в браузере страницу https://xxxxxxxxxxxx.ngrok-free.app/docusign_auth.php для OAuth авторизации в Docusing и получения авторизационного токена.
-Токен сохранится как файл docusign.json в корне проекта (можно переопределить путь к файлу в .env TOKENINFO_PATH).
-
-Для того, чтобы поддерживать авторизацию, необходимо периодически обновлять токен (например, через крон):
-
+**OAuth авторизация DocuSign:**
+```bash
 php docusign_auth.php
+```
+Запускайте периодически (через cron) для обновления токенов.
 
-### Настройка интеграции с Pipedrive
-
-https://xxxxxxxxxxxx.ngrok-free.app/pipedrive-webhook.php - используйте этот адрес в Pipedrive при настройке webhook (https://support.pipedrive.com/en/article/webhooks)
-
-Если пользователи уже есть в системе и вам нужно выгрузить их в Pipedrive, выполните команду
-
+**Загрузка пользователей в Pipedrive:**
+```bash
 php load2pipedrive.php
+```
 
-## Настройка бота Телеграм
+**Админ-панель:**
+Откройте `/table.php` в браузере (требуется ADM_LOGIN/ADM_PASSWORD из .env).
 
-Перейдите в BotFather (https://t.me/BotFather) для создания и настройки своего бота. Используйте /newbot для создания бота или /mybots для выбора существующего. 
-Сохраните полученный BOT_TOKEN в .env.
+### 3. Настройка интеграций
 
-php webhook.php выведет адрес вида https://api.telegram.org/botDDDDDDDDDD:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/setWebhook?url=https://xxxxxxxxxxxx.ngrok-free.app/webhook.php
-Открыв ссылку по этому адресу в браузере, вы установите webhook в Телеграм для работы своего бота. Ответ {"ok":true,"result":true,"description":"Webhook was set"} будет свидетельствовать об
-успешной установке веб-хука.
+**Telegram:**
+1. Создайте бота через [BotFather](https://t.me/BotFather) (`/newbot`)
+2. Сохраните `BOT_TOKEN` в `.env`
+3. Выполните `php webhook.php` и откройте полученный URL в браузере
+4. Успешный ответ: `{"ok":true,"result":true,"description":"Webhook was set"}`
 
-## Demo
-https://t.me/TestQuizAndSignBot
+**DocuSign:**
+1. Настройте webhook: `https://your-domain.ngrok-free.app/docusign_webhook.php`
+2. Документация: [DocuSign Webhooks](https://developers.docusign.com/platform/webhooks/)
+3. Укажите в `.env`: `DOCUSIGN_INTEGRATION_KEY`, `DOCUSIGN_SECRET_KEY`, `DOCUSIGN_ACCOUNT_ID`, `DOCUSIGN_NDA_TEMPLATE_ID`
+4. Откройте `https://your-domain.ngrok-free.app/docusign_auth.php` для OAuth авторизации
+5. Токен сохранится в `docusign.json` (путь настраивается через `TOKENINFO_PATH` в `.env`)
+
+**Pipedrive:**
+1. Настройте webhook: `https://your-domain.ngrok-free.app/pipedrive-webhook.php`
+2. Документация: [Pipedrive Webhooks](https://support.pipedrive.com/en/article/webhooks)
+3. Укажите `PIPEDRIVE_TOKEN` в `.env`
+
+## Важные паттерны проектирования
+
+1. **Управление состоянием**: прогресс пользователя отслеживается через `question_id` в `tmt_user`
+2. **Паттерн Command**: все взаимодействия бота маршрутизируются через `TgCommand::process()`
+3. **Паттерн Factory**: `TgResponse::create($type, $state)` создаёт экземпляры классов ответов
+4. **Active Record**: модели наследуют `Model` с автоматическим save/определением таблицы
+
+## Тестирование
+
+### Ручное тестирование
+
+Тестовый режим: откройте `webhook.php?test=1` для повтора последнего полученного сообщения без логирования.
+
+### Автоматическое тестирование (PHPUnit)
+
+# Запуск всех тестов
+vendor/bin/phpunit
+
+## Демо
+
+[https://t.me/TestQuizAndSignBot](https://t.me/TestQuizAndSignBot)
 
