@@ -1,5 +1,5 @@
 <?php
-namespace jam\engine\core\DBSimple;
+namespace jam\engine\core\DbSimple;
 
 use Exception;
 

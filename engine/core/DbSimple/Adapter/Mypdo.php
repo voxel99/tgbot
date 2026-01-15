@@ -4,9 +4,9 @@ namespace jam\engine\core\DbSimple\Adapter;
 
 use Exception;
 use PDO;
-use jam\engine\core\DBSimple\Database;
-use jam\engine\core\DBSimple\AdapterInterface;
-use jam\engine\core\DBSimple\DatabaseInterface;
+use jam\engine\core\DbSimple\Database;
+use jam\engine\core\DbSimple\AdapterInterface;
+use jam\engine\core\DbSimple\DatabaseInterface;
 use PDOException;
 
 /**

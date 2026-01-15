@@ -4,7 +4,7 @@
  */
 
 use jam\engine\core\Database;
-use jam\engine\core\DbSimple\Database as DBSimpleDatabase;
+use jam\engine\core\DbSimple\Database as DbSimpleDatabase;
 use jam\engine\core\Request;
 
 /**
@@ -31,7 +31,7 @@ function config (string $section, mixed $default = []): mixed {
 /**
  * Экземпляр БД
  */
-function db (string $name = "master"): Database|DBSimpleDatabase {
+function db (string $name = "master"): Database|DbSimpleDatabase {
     global $jam;
     return $jam->db($name);
 }

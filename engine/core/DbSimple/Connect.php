@@ -1,6 +1,6 @@
 <?php
 
-namespace jam\engine\core\DBSimple;
+namespace jam\engine\core\DbSimple;
 
 /**
  * Используйте константу DBSIMPLE_SKIP в качестве подстановочного значения чтобы пропустить опцональный SQL блок.

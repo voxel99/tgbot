@@ -1,10 +1,10 @@
 <?php
 
-namespace jam\engine\core\DBSimple\Adapter;
+namespace jam\engine\core\DbSimple\Adapter;
 
-use jam\engine\core\DBSimple\Database;
-use jam\engine\core\DBSimple\AdapterInterface;
-use jam\engine\core\DBSimple\DatabaseInterface;
+use jam\engine\core\DbSimple\Database;
+use jam\engine\core\DbSimple\AdapterInterface;
+use jam\engine\core\DbSimple\DatabaseInterface;
 
 /**
  * DbSimple_Postgreql: PostgreSQL database.

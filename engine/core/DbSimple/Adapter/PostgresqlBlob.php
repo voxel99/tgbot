@@ -1,8 +1,8 @@
 <?php
 
-namespace jam\engine\core\DBSimple\Adapter;
+namespace jam\engine\core\DbSimple\Adapter;
 
-use jam\engine\core\DBSimple\BlobInterface;
+use jam\engine\core\DbSimple\BlobInterface;
 
 class PostgresqlBlob implements BlobInterface {
 

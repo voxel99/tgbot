@@ -1,6 +1,6 @@
 <?php
 
-namespace jam\engine\core\DBSimple;
+namespace jam\engine\core\DbSimple;
 
 /**
  * DbSimple_Generic: universal database connected by DSN.

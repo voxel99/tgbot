@@ -1,6 +1,6 @@
 <?php
 
-namespace jam\engine\core\DBSimple;
+namespace jam\engine\core\DbSimple;
 
 /**
  * Класс для хранения подзапроса - результата выполнения функции
