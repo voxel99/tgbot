@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1ee93e15364236da6587f00b589f60d",
+    "content-hash": "47279301318dcdae5609313a7faa6130",
     "packages": [
         {
             "name": "apimatic/jsonmapper",
@@ -177,6 +177,145 @@
                 "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
             "time": "2025-04-09T20:32:01+00:00"
+        },
+        {
+            "name": "jam/dbsimple",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voxel99/dbsimple.git",
+                "reference": "f113ee3700cc5bd94c5e1a34127887ffecdc74c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voxel99/dbsimple/zipball/f113ee3700cc5bd94c5e1a34127887ffecdc74c4",
+                "reference": "f113ee3700cc5bd94c5e1a34127887ffecdc74c4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0 || ^11.0"
+            },
+            "suggest": {
+                "ext-pdo_mysql": "MySQL / MariaDB adapter (mypdo://)",
+                "ext-pdo_sqlite": "SQLite adapter (sqlite://)",
+                "ext-pgsql": "PostgreSQL adapter (postgresql://)"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jam\\DbSimple\\": "src/"
+                },
+                "files": [
+                    "src/constants.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Jam\\DbSimple\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "LGPL-2.1-only"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitry Koterov",
+                    "homepage": "http://en.dklab.ru",
+                    "role": "Original Author"
+                },
+                {
+                    "name": "Jam Contributors",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Modernized fork of DbSimple database abstraction layer for PHP 8.1+",
+            "keywords": [
+                "database",
+                "dbal",
+                "dbsimple",
+                "mysql",
+                "pdo",
+                "postgresql",
+                "sql",
+                "sqlite"
+            ],
+            "support": {
+                "source": "https://github.com/voxel99/dbsimple/tree/main",
+                "issues": "https://github.com/voxel99/dbsimple/issues"
+            },
+            "time": "2026-09-28T23:41:42+00:00"
+        },
+        {
+            "name": "jam/dbsimple-models",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voxel99/dbsimple-models.git",
+                "reference": "9e65769eb9e793987d9f801d7f979393d3e1472c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voxel99/dbsimple-models/zipball/9e65769eb9e793987d9f801d7f979393d3e1472c",
+                "reference": "9e65769eb9e793987d9f801d7f979393d3e1472c",
+                "shasum": ""
+            },
+            "require": {
+                "jam/dbsimple": "dev-main || ^1.0",
+                "php": ">=8.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0 || ^11.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jam\\Models\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Jam\\Models\\Tests\\": "tests/",
+                    "Jam\\Models\\Examples\\": "examples/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "test:mysql": [
+                    "DBSIMPLE_TEST_MYSQL=mysql://test:test@127.0.0.1/dbsimple_test phpunit"
+                ],
+                "examples": [
+                    "for f in examples/[0-9]*.php; do echo \"### $f\"; php \"$f\" > /dev/null || exit 1; done"
+                ]
+            },
+            "license": [
+                "LGPL-2.1-only"
+            ],
+            "authors": [
+                {
+                    "name": "Jam Contributors",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "ActiveRecord / Model layer for Jam DbSimple",
+            "keywords": [
+                "active-record",
+                "database",
+                "dbsimple",
+                "models",
+                "orm"
+            ],
+            "support": {
+                "source": "https://github.com/voxel99/dbsimple-models/tree/main",
+                "issues": "https://github.com/voxel99/dbsimple-models/issues"
+            },
+            "time": "2026-09-29T04:44:23+00:00"
         },
         {
             "name": "mashape/unirest-php",
@@ -1957,12 +2096,17 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "jam/dbsimple": 20,
+        "jam/dbsimple-models": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "ext-curl": "*"
+        "php": ">=8.4",
+        "ext-curl": "*",
+        "ext-pdo_mysql": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

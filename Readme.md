@@ -12,7 +12,7 @@
 
 ## Системные требования
 
-* PHP >= 8
+* PHP >= 8.4 (pdo_mysql)
 * MySQL >= 5
 * Composer
 
@@ -88,7 +88,7 @@ php load2pipedrive.php
 1. **Управление состоянием**: прогресс пользователя отслеживается через `question_id` в `tmt_user`
 2. **Паттерн Command**: все взаимодействия бота маршрутизируются через `TgCommand::process()`
 3. **Паттерн Factory**: `TgResponse::create($type, $state)` создаёт экземпляры классов ответов
-4. **Active Record**: модели наследуют `Model` с автоматическим save/определением таблицы
+4. **Active Record**: модели `app/tg/state/*` построены на [`jam/dbsimple-models`](https://github.com/voxel99/dbsimple-models), доступ к БД — через [`jam/dbsimple`](https://github.com/voxel99/dbsimple) (`db()`)
 
 ## Тестирование
 

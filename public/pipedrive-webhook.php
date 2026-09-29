@@ -17,9 +17,7 @@ if ($data) {
         $stageSend = PipeApi::getStageId(PipeApi::NDA_SEND_TEXT);
         $stageSign = PipeApi::getStageId(PipeApi::NDA_SIGN_TEXT);
         if ($chatId) {
-            $U = new User;
-            $UserLog = new UserLog();
-            $user = $U->get($chatId);
+            $user = User::findByChatId((int) $chatId);
             if ($user->exists()) {
                 $oldEnvelopeSend = (int) $user->envelope_send;
                 $oldEnvelopeSign = (int) $user->envelope_sign;
@@ -30,11 +28,11 @@ if ($data) {
                 $user->save();
 
                 if ($oldEnvelopeSend !== $user->envelope_send) {
-                    $UserLog->add($user->id, 'NDA отправлен', $oldEnvelopeSend, $user->envelope_send, 'Webhook');
+                    UserLog::add($user->id, 'NDA отправлен', $oldEnvelopeSend, $user->envelope_send, 'Webhook');
                 }
 
                 if ($oldEnvelopeSign !== $user->envelope_sign) {
-                    $UserLog->add($user->id, 'NDA подписан', $oldEnvelopeSign, $user->envelope_sign, 'Webhook');
+                    UserLog::add($user->id, 'NDA подписан', $oldEnvelopeSign, $user->envelope_sign, 'Webhook');
                 }
 
             }

@@ -27,8 +27,7 @@ if ($data) {
 */
     if (!empty($r->event) && $r->event === 'envelope-completed') {
         $envelopeId = $r->data->envelopeId;
-        $U = new \jam\app\tg\state\User();
-        $U->getByEnvelopeId($envelopeId);
+        $U = \jam\app\tg\state\User::findByEnvelopeId($envelopeId);
         if ($U->exists()) {
             $U->envelope_sign = 1;
             $U->save();

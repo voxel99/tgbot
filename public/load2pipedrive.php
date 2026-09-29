@@ -10,8 +10,7 @@ if (!request()->isCli()) {
     die;
 }
 
-$U = new User();
-$users = $U->getList(1000);
+$users = User::getList(1000);
 
 // Delete all prev deals
 if (false) {

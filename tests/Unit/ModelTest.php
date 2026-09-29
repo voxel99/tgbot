@@ -5,11 +5,12 @@ namespace Tests\Unit;
 use jam\app\tg\state\Answer;
 use jam\app\tg\state\User;
 use jam\app\tg\state\UserLog;
+use Jam\Models\ModelException;
 use PHPUnit\Framework\TestCase;
 
 class ModelTest extends TestCase {
     /**
-     * Тест проверяет работу метода init()
+     * Тест проверяет инициализацию модели массивом
      */
     public function testModelInit (): void {
         $answer = new Answer([
@@ -30,7 +31,7 @@ class ModelTest extends TestCase {
     }
 
     /**
-     * Тест проверяет работу метода merge()
+     * Тест проверяет работу метода fromArray() (дозаполнение модели)
      */
     public function testModelMerge (): void {
         $user = new User([
@@ -43,7 +44,7 @@ class ModelTest extends TestCase {
         $this->assertEquals('en', $user->lang);
         $this->assertEquals('+1234567890', $user->phone);
 
-        $user->merge([
+        $user->fromArray([
             'lang' => 'ru',
             'question_id' => 20
         ]);
@@ -93,18 +94,53 @@ class ModelTest extends TestCase {
     }
 
     /**
-     * Тест проверяет, что несуществующие свойства не устанавливаются через init()
+     * Тест проверяет, что поля, которых нет в модели, отвергаются
      */
-    public function testInitIgnoresInvalidProperties (): void {
-        $answer = new Answer([
+    public function testInitRejectsInvalidProperties (): void {
+        $this->expectException(ModelException::class);
+        new Answer([
             'id' => 1,
             'user_id' => 100,
-            'invalid_property' => 'should be ignored'
+            'invalid_property' => 'should be rejected'
         ]);
+    }
 
-        $this->assertEquals(1, $answer->id);
-        $this->assertEquals(100, $answer->user_id);
-        $this->assertFalse(property_exists($answer, 'invalid_property'));
+    /**
+     * Тест проверяет приведение типов полей
+     */
+    public function testFieldTypes (): void {
+        $user = new User(['id' => '5', 'chat_id' => '123456', 'envelope_send' => '1']);
+        $this->assertSame(5, $user->id);
+        $this->assertSame(123456, $user->chat_id);
+        $this->assertSame(1, $user->envelope_send);
+
+        $user->setEnvelopeId('abc');
+        $this->assertSame('abc', $user->envelope_id);
+        $this->assertSame(1, $user->envelope_send);
+    }
+
+    /**
+     * Тест проверяет работу с ответами пользователя
+     */
+    public function testUserAnswers (): void {
+        $user = new User(['id' => 7]);
+        $this->assertSame([], $user->getAnswers());
+
+        $user->setAnswer(10, ' Ivan ');
+        $user->setAnswer(20, 'ivan@example.com');
+        $answers = $user->getAnswers();
+        $this->assertSame([10, 20], array_keys($answers));
+        $this->assertSame('Ivan', $answers[10]->value);
+        $this->assertSame(7, $answers[10]->user_id);
+
+        $answers[10]->id = 3;
+        $answers[10]->created_at = '2024-01-01 00:00:00';
+        $user->setAnswer(10, 'Petr');
+        $answer = $user->getAnswers()[10];
+        $this->assertSame(3, $answer->id);
+        $this->assertSame('Petr', $answer->value);
+        $this->assertSame('2024-01-01 00:00:00', $answer->created_at);
+        $this->assertCount(2, $user->getAnswers());
     }
 
     /**
@@ -120,8 +156,8 @@ class ModelTest extends TestCase {
         $this->assertNull($user->phone);
         $this->assertNull($user->referrer);
         $this->assertNull($user->envelope_id);
-        $this->assertEquals(0, $user->envelope_sign);
-        $this->assertEquals(0, $user->envelope_send);
+        $this->assertEmpty($user->envelope_sign);
+        $this->assertEmpty($user->envelope_send);
         $this->assertNull($user->pipedrive_id);
     }
 }

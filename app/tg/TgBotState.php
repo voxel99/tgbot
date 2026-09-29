@@ -38,7 +38,7 @@ class TgBotState {
 
     public function getUser (): User {
         if (!$this->user) {
-            $this->user = (new User())->get($this->chatId);
+            $this->user = User::findByChatId($this->chatId);
         }
         return $this->user;
     }
