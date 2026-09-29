@@ -2,28 +2,40 @@
 
 namespace jam\app\tg\state;
 
+/**
+ * @property int|null $id
+ * @property int|null $user_id
+ * @property string|null $change_date
+ * @property string|null $prop_name
+ * @property string|null $old_value
+ * @property string|null $new_value
+ * @property string|null $ip
+ */
 class UserLog extends Model {
-    public ?int $user_id = null;
-    public ?string $change_date = null;
-    public ?string $prop_name = null;
-    public ?string $old_value = null;
-    public ?string $new_value = null;
-    public ?string $ip = null;
+    protected string $fields = 'id, user_id, change_date, prop_name, old_value, new_value, ip';
 
-    public function add (int $userId, string $propName, ?string $oldValue, ?string $newValue, string $ip): void {
-        $this->id = null;
-        $this->user_id = $userId;
-        $this->change_date = date('Y-m-d H:i:s');
-        $this->prop_name = $propName;
-        $this->old_value = $oldValue;
-        $this->new_value = $newValue;
-        $this->ip = $ip;
+    protected $types = [
+        'int' => 'id, user_id',
+    ];
 
-        $this->save();
+    public static function add (int $userId, string $propName, ?string $oldValue, ?string $newValue, string $ip): static {
+        $log = new static([
+            'user_id' => $userId,
+            'change_date' => static::freshTimestamp(),
+            'prop_name' => $propName,
+            'old_value' => $oldValue,
+            'new_value' => $newValue,
+            'ip' => $ip,
+        ]);
+        $log->save();
+        return $log;
     }
 
-    public function getList (int $userId, ?string $propName = null): array {
-        return db()->select('SELECT * FROM ?_user_log WHERE user_id = ?d {AND prop_name = ?} ORDER BY id DESC LIMIT 100', $userId, $propName ?: DBSIMPLE_SKIP);
+    public static function getList (int $userId, ?string $propName = null): array {
+        $query = static::instance()->where(['user_id' => $userId]);
+        if ($propName) {
+            $query->where(['prop_name' => $propName]);
+        }
+        return $query->orderBy('id DESC')->limit(100)->collection()->toArray();
     }
 }
-

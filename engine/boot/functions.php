@@ -3,8 +3,7 @@
  * Helper functions
  */
 
-use jam\engine\core\Database;
-use jam\engine\core\DbSimple\Database as DbSimpleDatabase;
+use Jam\DbSimple\Connect;
 use jam\engine\core\Request;
 
 /**
@@ -31,7 +30,7 @@ function config (string $section, mixed $default = []): mixed {
 /**
  * Экземпляр БД
  */
-function db (string $name = "master"): Database|DbSimpleDatabase {
+function db (string $name = "master"): Connect {
     global $jam;
     return $jam->db($name);
 }

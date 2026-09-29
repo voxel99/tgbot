@@ -1,15 +1,15 @@
 <?php
 
+use jam\app\tg\state\User;
+use jam\app\tg\state\UserLog;
+
 include "init.php";
 
 show401 ();
 
-$U = new \jam\app\tg\state\User();
-$UserLog = new \jam\app\tg\state\UserLog();
-
 $content = [];
 if (isset($_GET['chat_id'])) {
-    $user = $U->get($_GET['chat_id']);
+    $user = User::findByChatId((int) $_GET['chat_id']);
     $ndaToggleMessage = '';
     $ndaSendToggleMessage = '';
     
@@ -27,7 +27,7 @@ if (isset($_GET['chat_id'])) {
 
     if (isset($_GET['nda-confirm'])) {
         $newValue = $user->envelope_sign ? 0 : 1;
-        $UserLog->add ($user->id, 'NDA подписан', $user->envelope_sign, $newValue, request()->env()->getIp());
+        UserLog::add($user->id, 'NDA подписан', $user->envelope_sign, $newValue, request()->env()->getIp());
         $user->envelope_sign = $newValue;
         $user->save();
         \jam\app\utils\PipeApi::updateNDAState($user);
@@ -37,7 +37,7 @@ if (isset($_GET['chat_id'])) {
 
     if (isset($_GET['nda-send-confirm'])) {
         $newValue = $user->envelope_send ? 0 : 1;
-        $UserLog->add ($user->id, 'NDA отправлен', $user->envelope_send, $newValue, request()->env()->getIp());
+        UserLog::add($user->id, 'NDA отправлен', $user->envelope_send, $newValue, request()->env()->getIp());
         $user->envelope_send = $newValue;
         $user->save();
         \jam\app\utils\PipeApi::updateNDAState($user);
@@ -57,7 +57,7 @@ if (isset($_GET['chat_id'])) {
         ]);
     }
 
-    $logList = $UserLog->getList($user->id);
+    $logList = $user->exists() ? UserLog::getList($user->id) : [];
     $log = tpl('table/user-log.html', ['list' => $logList]);
 
     $content[] = tpl('table/user.html', [
@@ -72,7 +72,7 @@ if (isset($_GET['chat_id'])) {
     $limit = max(1000, $_GET['onpage'] ?? 1000);
     $page = max($_GET['page'] ?? 1, 1);
 
-    $list = $U->getList($limit, max(0, ($page - 1) * $limit), $_GET['filter'] ?? []);
+    $list = User::getList($limit, max(0, ($page - 1) * $limit), $_GET['filter'] ?? []);
     $pages = ceil($list->count / $limit);
 
     $content[] = tpl(

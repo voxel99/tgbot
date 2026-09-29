@@ -3,7 +3,7 @@
 use jam\engine\core\Request;
 use jam\engine\core\Response;
 
-use jam\engine\core\Database;
+use Jam\DbSimple\Connect;
 
 class Jam {
     static $db = [];
@@ -78,9 +78,16 @@ class Jam {
         return $config;
     }
 
-    public function db(string $name = "master"): Database {
+    /**
+     * Соединение с БД (ленивое: подключение происходит при первом запросе)
+     */
+    public function db(string $name = "master"): Connect {
         if (empty(self::$db[$name])) {
-            self::$db[$name] = new Database($this->config('db.'.$name), $name);
+            $dsn = $this->config('db.'.$name, '');
+            if (!$dsn || !is_string($dsn)) {
+                throw new \Exception("DSN не задан для подключения " . $name);
+            }
+            self::$db[$name] = new Connect($dsn);
         }
         return self::$db[$name];
     }
